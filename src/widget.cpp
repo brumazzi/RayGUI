@@ -1,8 +1,8 @@
-#include <component.hpp>
+#include <widget.hpp>
 #include <string.h>
 #include <stdio.h>
 
-RayComponent::RayComponent(const char *name){
+RayWidget::RayWidget(const char *name){
     strcpy(this->name, name);
     for(int i=0; i<7; i++){
         this->isMouseButtonDown.push_back(false);
@@ -123,18 +123,18 @@ RayComponent::RayComponent(const char *name){
     this->isKeyboardDown[KEY_VOLUME_DOWN] = false; this->isKeyboardPressed[KEY_VOLUME_DOWN] = false; this->isKeyboardReleased[KEY_VOLUME_DOWN] = false; this->isKeyboardUp[KEY_VOLUME_DOWN] = true;
 }
 
-RayComponent::~RayComponent(){}
+RayWidget::~RayWidget(){}
 
-void RayComponent::addChild(RayComponent *component){
-    this->children[component->name] = component;
-    component->parent = this;
+void RayWidget::addChild(RayWidget *Widget){
+    this->children[Widget->name] = Widget;
+    Widget->parent = this;
 }
-void RayComponent::removeChild(RayComponent *component){
-    this->children.erase(component->name);
-    component->parent = NULL;
+void RayWidget::removeChild(RayWidget *Widget){
+    this->children.erase(Widget->name);
+    Widget->parent = NULL;
 }
 
-bool RayComponent::update(){
+bool RayWidget::update(){
     if(this->hidden) return false;
     if(this->onUpdate) this->onUpdate(this);
 
@@ -148,8 +148,8 @@ bool RayComponent::update(){
     Vector2 pos = GetMousePosition();
     bool stopUpdate = false;
 
-    for(auto [name, component]: this->children){
-        stopUpdate = component->update();
+    for(auto [name, Widget]: this->children){
+        stopUpdate = Widget->update();
     }
 
     if(pos.x >= virtualDimension.x && pos.x <= virtualDimension.x + virtualDimension.width && pos.y >= virtualDimension.y && pos.y <= virtualDimension.y + virtualDimension.height){
@@ -178,18 +178,29 @@ bool RayComponent::update(){
     if(!this->isKeyboardRequestFocus || (this->isKeyboardRequestFocus && this->isFocus)){
         for(auto [key, value]: this->isKeyboardPressed){
             if(this->isKeyboardUp[key] = IsKeyUp(key) && isKeyboardReleased[key]){
-                if(this->onKeyboardUp) this->onKeyboardUp(this, key);
+                if(this->onKeyboardUp){
+                    this->onKeyboardUp(this, key);
+                    if(this->isKeyboardRequestFocus && this->isFocus) return true;
+                }
             }
             if(this->isKeyboardDown[key] = IsKeyDown(key) && isKeyboardPressed[key]){
-                if(this->onKeyboardDown) this->onKeyboardDown(this, key);
+                if(this->onKeyboardDown){
+                    this->onKeyboardDown(this, key);
+                    if(this->isKeyboardRequestFocus && this->isFocus) return true;
+                }
             }
             if(this->isKeyboardPressed[key] = IsKeyPressed(key)){
-                if(this->onKeyboardPressed) this->onKeyboardPressed(this, key);
+                if(this->onKeyboardPressed){
+                    this->onKeyboardPressed(this, key);
+                    if(this->isKeyboardRequestFocus && this->isFocus) return true;
+                }
             }
             if(this->isKeyboardReleased[key] = IsKeyReleased(key)){
-                if(this->onKeyboardReleased) this->onKeyboardReleased(this, key);
+                if(this->onKeyboardReleased){
+                    this->onKeyboardReleased(this, key);
+                    if(this->isKeyboardRequestFocus && this->isFocus) return true;
+                }
             }
-
         }
     }
 
@@ -222,7 +233,7 @@ bool RayComponent::update(){
     return stopUpdate;
 }
 
-bool RayComponent::draw(){
+bool RayWidget::draw(){
     if(this->hidden) return false;
 
     Color color1 = this->color1,
@@ -272,57 +283,57 @@ bool RayComponent::draw(){
         DrawText((const char*) this->text, centerX, centerY, this->fontSize, this->textColor);
     }
 
-    for(auto [name, component]: this->children){
-        if(component->draw()) return true;
+    for(auto [name, Widget]: this->children){
+        if(Widget->draw()) return true;
     }
 
     return true;
 }
 
-void RayComponent::setColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a){
+void RayWidget::setColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a){
     this->color1 = (Color) {r,g,b,a};
     this->color2 = (Color) {r,g,b,a};
     this->color3 = (Color) {r,g,b,a};
     this->color4 = (Color) {r,g,b,a};
 }
 
-void RayComponent::setColor(Color color){
+void RayWidget::setColor(Color color){
     this->color1 = color;
     this->color2 = color;
     this->color3 = color;
     this->color4 = color;
 }
-void RayComponent::setColorClick(unsigned char r, unsigned char g, unsigned char b, unsigned char a){
+void RayWidget::setColorClick(unsigned char r, unsigned char g, unsigned char b, unsigned char a){
     this->color1 = (Color) {r,g,b,a};
     this->color2 = (Color) {r,g,b,a};
     this->color3 = (Color) {r,g,b,a};
     this->color4 = (Color) {r,g,b,a};
 }
-void RayComponent::setColorClick(Color color){
+void RayWidget::setColorClick(Color color){
     this->color1 = color;
     this->color2 = color;
     this->color3 = color;
     this->color4 = color;
 }
-void RayComponent::setColorFocus(unsigned char r, unsigned char g, unsigned char b, unsigned char a){
+void RayWidget::setColorFocus(unsigned char r, unsigned char g, unsigned char b, unsigned char a){
     this->color1 = (Color) {r,g,b,a};
     this->color2 = (Color) {r,g,b,a};
     this->color3 = (Color) {r,g,b,a};
     this->color4 = (Color) {r,g,b,a};
 }
-void RayComponent::setColorFocus(Color color){
+void RayWidget::setColorFocus(Color color){
     this->color1 = color;
     this->color2 = color;
     this->color3 = color;
     this->color4 = color;
 }
-void RayComponent::setColorOver(unsigned char r, unsigned char g, unsigned char b, unsigned char a){
+void RayWidget::setColorOver(unsigned char r, unsigned char g, unsigned char b, unsigned char a){
     this->color1 = (Color) {r,g,b,a};
     this->color2 = (Color) {r,g,b,a};
     this->color3 = (Color) {r,g,b,a};
     this->color4 = (Color) {r,g,b,a};
 }
-void RayComponent::setColorOver(Color color){
+void RayWidget::setColorOver(Color color){
     this->color1 = color;
     this->color2 = color;
     this->color3 = color;

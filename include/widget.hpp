@@ -1,5 +1,5 @@
-#ifndef __RAY_COMPONENT_HPP__
-#define __RAY_COMPONENT_HPP__
+#ifndef __RAY_Widget_HPP__
+#define __RAY_Widget_HPP__
 
 #include <raylib.h>
 #include <vector>
@@ -7,7 +7,7 @@
 
 using std::map;
 
-class RayComponent{
+class RayWidget{
     public:
 
     char name[64] = {0};
@@ -37,8 +37,8 @@ class RayComponent{
     int borderSize = 0;
     int roundedSegments = 6;
     float roundedSize = 0.0;
-    map<const char*, RayComponent*> children;
-    RayComponent* parent = nullptr;
+    map<const char*, RayWidget*> children;
+    RayWidget* parent = nullptr;
     int fontSize = 22;
     bool hidden = false;
     // float alpha = 1.0;
@@ -64,8 +64,8 @@ class RayComponent{
     bool lastFocus;
     // bool lastClicked;
 
-    void addChild(RayComponent *component);
-    void removeChild(RayComponent *component);
+    void addChild(RayWidget *Widget);
+    void removeChild(RayWidget *Widget);
     void setColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
     void setColor(Color color);
     void setColorClick(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
@@ -78,26 +78,26 @@ class RayComponent{
     bool update();
     bool draw();
 
-    // component events
-    void (*onUpdate)(RayComponent *component)                                           = nullptr;
-    void (*onFocus)(RayComponent *component)                                            = nullptr;
+    // Widget events
+    void (*onUpdate)(RayWidget *Widget)                                           = nullptr;
+    void (*onFocus)(RayWidget *Widget)                                            = nullptr;
 
-    void (*onMouseEnter)(RayComponent *component)                                       = nullptr;
-    void (*onMouseExit)(RayComponent *component)                                        = nullptr;
-    void (*onMouseOver)(RayComponent *component, int x, int y)                          = nullptr;
+    void (*onMouseEnter)(RayWidget *Widget)                                       = nullptr;
+    void (*onMouseExit)(RayWidget *Widget)                                        = nullptr;
+    void (*onMouseOver)(RayWidget *Widget, int x, int y)                          = nullptr;
 
-    void (*onMouseDown)(RayComponent *component, int keyCode, int x, int y)             = nullptr;
-    void (*onMousePressed)(RayComponent *component, int keyCode, int x, int y)          = nullptr;
-    void (*onMouseReleased)(RayComponent *component, int keyCode, int x, int y)         = nullptr;
-    void (*onMouseUp)(RayComponent *component, int keyCode, int x, int y)               = nullptr;
+    void (*onMouseDown)(RayWidget *Widget, int keyCode, int x, int y)             = nullptr;
+    void (*onMousePressed)(RayWidget *Widget, int keyCode, int x, int y)          = nullptr;
+    void (*onMouseReleased)(RayWidget *Widget, int keyCode, int x, int y)         = nullptr;
+    void (*onMouseUp)(RayWidget *Widget, int keyCode, int x, int y)               = nullptr;
 
-    void (*onKeyboardPressed)(RayComponent *component, int keyCode)                     = nullptr;
-    void (*onKeyboardReleased)(RayComponent *component, int keyCode)                    = nullptr;
-    void (*onKeyboardDown)(RayComponent *component, int keyCode)                        = nullptr;
-    void (*onKeyboardUp)(RayComponent *component, int keyCode)                          = nullptr;
+    void (*onKeyboardPressed)(RayWidget *Widget, int keyCode)                     = nullptr;
+    void (*onKeyboardReleased)(RayWidget *Widget, int keyCode)                    = nullptr;
+    void (*onKeyboardDown)(RayWidget *Widget, int keyCode)                        = nullptr;
+    void (*onKeyboardUp)(RayWidget *Widget, int keyCode)                          = nullptr;
 
-    RayComponent(const char *name);
-    ~RayComponent();
+    RayWidget(const char *name);
+    ~RayWidget();
 };
 
 

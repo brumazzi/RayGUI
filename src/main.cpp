@@ -1,31 +1,32 @@
 #include <raylib.h>
-#include <component.hpp>
+#include <widget.hpp>
+#include <button.hpp>
 #include <stdio.h>
 
-void labelOverCallback(RayComponent *component, int x, int y){
-    printf("%s, %d, %d\n", component->name, x, y);
+void labelOverCallback(RayWidget *widget, int x, int y){
+    printf("%s, %d, %d\n", widget->name, x, y);
 }
 
-void mouseEnterCallback(RayComponent *component){
-    component->borderColor = BLACK;
-    component->setColor(DARKGRAY);
+void mouseEnterCallback(RayWidget *widget){
+    widget->borderColor = BLACK;
+    widget->setColor(DARKGRAY);
 }
 
-void mouseExitCallback(RayComponent *component){
-    component->borderColor = DARKGRAY;
-    component->setColor(LIGHTGRAY);
+void mouseExitCallback(RayWidget *widget){
+    widget->borderColor = DARKGRAY;
+    widget->setColor(LIGHTGRAY);
 }
 
-void onKeyboardDown(RayComponent *c, int key){
+void onKeyboardDown(RayWidget *c, int key){
     printf("%s: %d: onKeyboardDown\n", c->name, key);
 }
-void onKeyboardPressed(RayComponent *c, int key){
+void onKeyboardPressed(RayWidget *c, int key){
     printf("%s: %d: onKeyboardPressed\n", c->name, key);
 }
-void onKeyboardReleased(RayComponent *c, int key){
+void onKeyboardReleased(RayWidget *c, int key){
     printf("%s: %d: onKeyboardReleased\n", c->name, key);
 }
-void onKeyboardUp(RayComponent *c, int key){
+void onKeyboardUp(RayWidget *c, int key){
     printf("%s: %d: onKeyboardUp\n", c->name, key);
 }
 
@@ -40,15 +41,15 @@ int main(){
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
-    RayComponent *component = new RayComponent("Component");
-    component->dimension.width = 800;
-    component->dimension.height = 400;
-    component->dimension.x = 30;
-    component->dimension.y = 30;
-    component->roundedSize = 0.1;
+    RayWidget *widget = new RayWidget("Widget");
+    widget->dimension.width = 800;
+    widget->dimension.height = 400;
+    widget->dimension.x = 30;
+    widget->dimension.y = 30;
+    widget->roundedSize = 0.1;
 
-    RayComponent *label = new RayComponent("Label");
-    component->addChild(label);
+    RayButton *label = new RayButton("Label");
+    widget->addChild(label);
     label->setColor(LIGHTGRAY);
     label->text = "My Label";
     label->dimension.width = 200;
@@ -60,29 +61,29 @@ int main(){
     // label->onMouseExit = mouseExitCallback;
 
     label->onKeyboardDown = onKeyboardDown;
-    component->onKeyboardDown = onKeyboardDown;
+    widget->onKeyboardDown = onKeyboardDown;
     label->onKeyboardPressed = onKeyboardPressed;
     label->onKeyboardReleased = onKeyboardReleased;
     label->onKeyboardUp = onKeyboardUp;
     label->isKeyboardRequestFocus = true;
 
-    component->text = "Hello world";
+    widget->text = "Hello world";
 
     // Main game loop
     while (!WindowShouldClose()){
-        component->update();
+        widget->update();
 
         BeginDrawing();
         {
             ClearBackground(RAYWHITE);
-            component->draw();
+            widget->draw();
             if(label->isFocus){
-                DrawText("Focus", 300,300, 22, BLACK);
-            }else DrawText("No Focus", 300,300, 22, BLACK);
+                DrawText(widget->name, 300,300, 22, BLACK);
+            }else DrawText(label->name, 300,300, 22, BLACK);
         }
         EndDrawing();
     }
 
-    delete component;
+    delete widget;
     CloseWindow();
 }
