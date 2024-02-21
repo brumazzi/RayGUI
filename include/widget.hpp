@@ -2,10 +2,12 @@
 #define __RAY_Widget_HPP__
 
 #include <raylib.h>
+#include <string>
 #include <vector>
 #include <map>
 
 using std::map;
+using std::string;
 
 class RayWidget{
     public:
@@ -37,9 +39,9 @@ class RayWidget{
     int borderSize = 0;
     int roundedSegments = 6;
     float roundedSize = 0.0;
-    map<const char*, RayWidget*> children;
+    map<string, RayWidget*> children;
     RayWidget* parent = nullptr;
-    int fontSize = 22;
+    int fontSize = 16;
     bool hidden = false;
     // float alpha = 1.0;
 
@@ -98,6 +100,10 @@ class RayWidget{
 
     RayWidget(const char *name);
     ~RayWidget();
+
+    private:
+    virtual void _draw();
+    virtual void _update();
 };
 
 

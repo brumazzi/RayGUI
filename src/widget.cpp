@@ -125,9 +125,9 @@ RayWidget::RayWidget(const char *name){
 
 RayWidget::~RayWidget(){}
 
-void RayWidget::addChild(RayWidget *Widget){
-    this->children[Widget->name] = Widget;
-    Widget->parent = this;
+void RayWidget::addChild(RayWidget *widget){
+    this->children[widget->name] = widget;
+    widget->parent = this;
 }
 void RayWidget::removeChild(RayWidget *Widget){
     this->children.erase(Widget->name);
@@ -137,6 +137,7 @@ void RayWidget::removeChild(RayWidget *Widget){
 bool RayWidget::update(){
     if(this->hidden) return false;
     if(this->onUpdate) this->onUpdate(this);
+    this->_update();
 
     virtualDimension = this->dimension;
     if(this->parent){
@@ -267,6 +268,7 @@ bool RayWidget::draw(){
         DrawRectangleGradientEx(virtualDimension, color1, color2, color3, color4);
     }
 
+    this->_draw();
     if(this->borderSize > 0){
         if(this->roundedSize > 0){
             DrawRectangleRoundedLines(virtualDimension, this->roundedSize, this->roundedSegments, this->borderSize, this->borderColor);
@@ -275,7 +277,7 @@ bool RayWidget::draw(){
         }
     }
 
-    if(*this->text){
+    if(this->text){
         int textLen = strlen(this->text);
         int centerX, centerY;
         centerX = (virtualDimension.width/2)-(MeasureText(this->text, this->fontSize)/2) + virtualDimension.x;
@@ -283,8 +285,8 @@ bool RayWidget::draw(){
         DrawText((const char*) this->text, centerX, centerY, this->fontSize, this->textColor);
     }
 
-    for(auto [name, Widget]: this->children){
-        if(Widget->draw()) return true;
+    for(auto [name, widget]: this->children){
+        widget->draw();
     }
 
     return true;
@@ -304,38 +306,41 @@ void RayWidget::setColor(Color color){
     this->color4 = color;
 }
 void RayWidget::setColorClick(unsigned char r, unsigned char g, unsigned char b, unsigned char a){
-    this->color1 = (Color) {r,g,b,a};
-    this->color2 = (Color) {r,g,b,a};
-    this->color3 = (Color) {r,g,b,a};
-    this->color4 = (Color) {r,g,b,a};
+    this->colorClick1 = (Color) {r,g,b,a};
+    this->colorClick2 = (Color) {r,g,b,a};
+    this->colorClick3 = (Color) {r,g,b,a};
+    this->colorClick4 = (Color) {r,g,b,a};
 }
 void RayWidget::setColorClick(Color color){
-    this->color1 = color;
-    this->color2 = color;
-    this->color3 = color;
-    this->color4 = color;
+    this->colorClick1 = color;
+    this->colorClick2 = color;
+    this->colorClick3 = color;
+    this->colorClick4 = color;
 }
 void RayWidget::setColorFocus(unsigned char r, unsigned char g, unsigned char b, unsigned char a){
-    this->color1 = (Color) {r,g,b,a};
-    this->color2 = (Color) {r,g,b,a};
-    this->color3 = (Color) {r,g,b,a};
-    this->color4 = (Color) {r,g,b,a};
+    this->colorFocus1 = (Color) {r,g,b,a};
+    this->colorFocus2 = (Color) {r,g,b,a};
+    this->colorFocus3 = (Color) {r,g,b,a};
+    this->colorFocus4 = (Color) {r,g,b,a};
 }
 void RayWidget::setColorFocus(Color color){
-    this->color1 = color;
-    this->color2 = color;
-    this->color3 = color;
-    this->color4 = color;
+    this->colorFocus1 = color;
+    this->colorFocus2 = color;
+    this->colorFocus3 = color;
+    this->colorFocus4 = color;
 }
 void RayWidget::setColorOver(unsigned char r, unsigned char g, unsigned char b, unsigned char a){
-    this->color1 = (Color) {r,g,b,a};
-    this->color2 = (Color) {r,g,b,a};
-    this->color3 = (Color) {r,g,b,a};
-    this->color4 = (Color) {r,g,b,a};
+    this->colorOver1 = (Color) {r,g,b,a};
+    this->colorOver2 = (Color) {r,g,b,a};
+    this->colorOver3 = (Color) {r,g,b,a};
+    this->colorOver4 = (Color) {r,g,b,a};
 }
 void RayWidget::setColorOver(Color color){
-    this->color1 = color;
-    this->color2 = color;
-    this->color3 = color;
-    this->color4 = color;
+    this->colorOver1 = color;
+    this->colorOver2 = color;
+    this->colorOver3 = color;
+    this->colorOver4 = color;
 }
+
+void RayWidget::_draw(){}
+void RayWidget::_update(){}
